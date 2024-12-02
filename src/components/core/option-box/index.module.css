@@ -1,0 +1,45 @@
+.option-box--root {
+  @apply relative size-full flex flex-col g-x-2;
+}
+.option-box--root:focus-within {
+  content: "focus-within";
+}
+.option-box--root:focus-within .option-box--label {
+  @apply color-blue;
+}
+.option-box--root:focus-within .option-box--modal {
+  @apply h-auto border-(solid x-4 b-4 blue);
+}
+.option-box--root span:empty {
+  @apply inline-full p-2;
+}
+.option-box--root .option-box--label {
+  @apply w-full p-2 font-600 text-sm color-mono;
+}
+.option-box--root .option-box--label:hover + .option-box--input {
+  @apply background-mono-200;
+}
+.option-box--root .option-box--input {
+  @apply w-full p-2 rounded font-600 text-base outline-(solid 1 mono-300) background-mono-50 color-mono-600;
+}
+.option-box--root .option-box--input:hover {
+  @apply background-mono-100;
+}
+.option-box--root .option-box--input:focus {
+  @apply outline-(solid 4 blue) background-white rounded-b-0;
+}
+.option-box--root .option-box--description {
+  @apply w-full p-2 font-400 text-xs color-mono;
+}
+.option-box--root .option-box--indicator {
+  @apply absolute top-1 right-1 pointer-events-none color-mono;
+}
+.option-box--root .option-box--modal {
+  @apply box-border absolute overflow-y-clip h-1 top-full left--1 right--1 z-10 bg-mono-50 border-(solid x-0 b-0 blue) rounded-b-2 border-t-0 overflow-clip;
+}
+.option-box--root .option-box--option {
+  @apply p-2 cursor-pointer;
+}
+.option-box--root .option-box--option:hover {
+  @apply background-mono-100;
+}/*# sourceMappingURL=index.module.css.map */

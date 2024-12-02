@@ -1,0 +1,55 @@
+.button--root {
+  @apply cursor-pointer relative flex items-center justify-center p-2 rounded font-600 text-base;
+}
+
+.button--root[variation=default] {
+  @apply background-[var(--color-50)] outline-(solid 1 [var(--color-300)]) color-[var(--color-600)];
+}
+.button--root[variation=default]:hover {
+  @apply background-[var(--color-100)];
+}
+.button--root[variation=default]:focus {
+  @apply outline-(solid 4 [var(--color-300)]);
+}
+.button--root[variation=default]:active {
+  @apply background-[var(--color-200)];
+}
+
+.button--root[variation=solid] {
+  @apply background-[var(--color)] color-white;
+}
+.button--root[variation=solid]:hover {
+  @apply background-[var(--color-500)];
+}
+.button--root[variation=solid]:focus {
+  @apply outline-(solid 4 [var(--color-300)]);
+}
+.button--root[variation=solid]:active {
+  @apply background-[var(--color-600)];
+}
+
+.button--root[variation=soft] {
+  @apply background-[var(--color-100)] color-[var(--color)];
+}
+.button--root[variation=soft]:hover {
+  @apply background-[var(--color-200)];
+}
+.button--root[variation=soft]:focus {
+  @apply outline-(solid 4 [var(--color-300)]);
+}
+.button--root[variation=soft]:active {
+  @apply background-[var(--color-300)];
+}
+
+.button--root[variation=text] {
+  @apply background-transparent color-[var(--color-600)];
+}
+.button--root[variation=text]:hover {
+  @apply background-mono-100;
+}
+.button--root[variation=text]:focus {
+  @apply outline-(solid 4 [var(--color-300)]);
+}
+.button--root[variation=text]:active {
+  @apply color-[var(--color-600)];
+}/*# sourceMappingURL=index.module.css.map */

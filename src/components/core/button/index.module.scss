@@ -1,0 +1,80 @@
+.button--root
+{
+    @apply cursor-pointer relative flex items-center justify-center p-2 rounded font-600 text-base;
+}
+
+.button--root[variation='default']
+{
+    @apply background-[var(--color-50)] outline-(solid 1 [var(--color-300)]) color-[var(--color-600)];
+
+    &:hover
+    {
+        @apply background-[var(--color-100)];
+    }
+
+    &:focus {
+        @apply outline-(solid 4 [var(--color-300)]);
+    }
+
+    &:active
+    {
+        @apply background-[var(--color-200)];
+    }
+}
+
+.button--root[variation='solid']
+{
+    @apply background-[var(--color)] color-white;
+
+    &:hover
+    {
+        @apply background-[var(--color-500)];
+    }
+
+    &:focus {
+        @apply outline-(solid 4 [var(--color-300)]);
+    }
+
+    &:active
+    {
+        @apply background-[var(--color-600)];
+    }
+}
+
+.button--root[variation='soft']
+{
+    @apply background-[var(--color-100)] color-[var(--color)];
+
+    &:hover
+    {
+        @apply background-[var(--color-200)];
+    }
+
+    &:focus {
+        @apply outline-(solid 4 [var(--color-300)]);
+    }
+
+    &:active
+    {
+        @apply background-[var(--color-300)];
+    }
+}
+
+.button--root[variation='text']
+{
+    @apply background-transparent color-[var(--color-600)];
+
+    &:hover
+    {
+        @apply background-mono-100;
+    }
+
+    &:focus {
+        @apply outline-(solid 4 [var(--color-300)]);
+    }
+
+    &:active
+    {
+        @apply color-[var(--color-600)];
+    }
+}

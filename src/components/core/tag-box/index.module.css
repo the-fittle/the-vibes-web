@@ -1,0 +1,30 @@
+.text-box--root {
+  @apply relative size-full flex flex-col g-x-2;
+}
+.text-box--root:focus-within {
+  content: "focus-within";
+}
+.text-box--root:focus-within .text-box--label {
+  @apply color-blue;
+}
+.text-box--root span:empty {
+  @apply inline-full p-2;
+}
+.text-box--root .text-box--label {
+  @apply w-full p-2 font-600 text-sm color-mono;
+}
+.text-box--root .text-box--label:hover + .text-box--input {
+  @apply background-mono-200;
+}
+.text-box--root .text-box--input {
+  @apply w-full p-2 rounded font-600 outline-(solid 1 mono-300) text-base background-mono-50 color-mono-600;
+}
+.text-box--root .text-box--input:hover {
+  @apply background-mono-100;
+}
+.text-box--root .text-box--input:focus {
+  @apply outline-(solid 4 blue) background-mono-50;
+}
+.text-box--root .text-box--description {
+  @apply w-full p-2 font-400 text-xs color-mono;
+}/*# sourceMappingURL=index.module.css.map */

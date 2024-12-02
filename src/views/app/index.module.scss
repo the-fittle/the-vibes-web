@@ -1,0 +1,43 @@
+.frame--root {
+    @apply relative cursor-pointer border border-black shadow-md;
+}
+
+.frame--root--selected {
+    @apply outline outline-4 outline-blue;
+}
+
+.frame--control-box {
+    @apply absolute bg-white w-2 h-2 outline outline-4 outline-blue;
+}
+
+.control-box--top-left {
+    @apply -top-1 -left-1 cursor-nw-resize;
+}
+
+.control-box--top {
+    @apply -top-1 left-1/2 transform -translate-x-1/2 cursor-n-resize;
+}
+
+.control-box--top-right {
+    @apply -top-1 -right-1 cursor-ne-resize;
+}
+
+.control-box--right {
+    @apply top-1/2 -right-1 transform -translate-y-1/2 cursor-e-resize;
+}
+
+.control-box--bottom-right {
+    @apply -bottom-1 -right-1 cursor-se-resize;
+}
+
+.control-box--bottom {
+    @apply -bottom-1 left-1/2 transform -translate-x-1/2 cursor-s-resize;
+}
+
+.control-box--bottom-left {
+    @apply -bottom-1 -left-1 cursor-sw-resize;
+}
+
+.control-box--left {
+    @apply top-1/2 -left-1 transform -translate-y-1/2 cursor-w-resize;
+}
