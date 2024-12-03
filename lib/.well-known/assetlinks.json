@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.the.vibes.app",
+            "sha256_cert_fingerprints": [
+                "84:F4:39:BF:39:9C:54:E9:33:45:AD:AD:36:5E:B7:94:F9:7B:98:18:30:53:74:3C:99:10:7D:41:F4:B2:C2:21"
+            ]
+        }
+    }
+]

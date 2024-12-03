@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+    ],
+    "module": "esnext",
+    "target": "esnext",
+    "outDir": "lib",
+    "rootDir": "./",
+    "noEmit": true,
+    "strict": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "baseUrl": "./src/",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "vite.config.ts",
+  ],
+}
