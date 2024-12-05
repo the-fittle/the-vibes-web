@@ -60,7 +60,7 @@ export const sendVerificationCode = functions.https.onRequest( ( req, res ) =>
 								100000 + Math.random() * 900000
 							).toString()
 
-							const expiresAt = Date.now() + 10 * 60 * 1000 // 10m
+							const expiresAt = Date.now() + 10 * 60 * 1000 // 10 minutes
 
 							await db
 								.collection( 'verificationCodes' )

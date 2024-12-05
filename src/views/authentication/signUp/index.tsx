@@ -1,15 +1,15 @@
-import { Box, Row, Column, Text, Spacer, TextBox, Button } from '@/components';
-import { Alignment, Arrangement, ModifierMedia, mod, colors, fp, sp } from '@/components/util';
-import { useAppContext } from '@/views/app';
-import { createSignal } from 'solid-js';
+import { Box, Row, Column, Text, Spacer, TextBox, Button } from '@/components'
+import { Alignment, Arrangement, ModifierMedia, mod, colors, fp, sp } from '@/components/util'
+import { useAppContext } from '@/views/app'
+import { createSignal } from 'solid-js'
 
 export function SignUp ()
 {
-    const context = useAppContext();
+    const context = useAppContext()
 
-    const [ email, setEmail ] = createSignal( '' );
-    const [ message, setMessage ] = createSignal( '' );
-    const [ loading, setLoading ] = createSignal( false );
+    const [ email, setEmail ] = createSignal( '' )
+    const [ message, setMessage ] = createSignal( '' )
+    const [ loading, setLoading ] = createSignal( false )
 
     return (
         <Box modifier={
@@ -66,19 +66,19 @@ export function SignUp ()
                         disabled={ loading() }
                         onClick={ async () =>
                         {
-                            if ( loading() ) return;
-                            setLoading( true );
-                            const emailValue = email().trim();
+                            if ( loading() ) return
+                            setLoading( true )
+                            const emailValue = email().trim()
                             if ( !emailValue )
                             {
-                                setMessage( 'Please enter a valid email address.' );
-                                setLoading( false );
-                                return;
+                                setMessage( 'Please enter a valid email address.' )
+                                setLoading( false )
+                                return
                             }
                             try
                             {
                                 const response = await fetch(
-                                    'https://us-central1-the-vibes-firebase.cloudfunctions.net/sendCode',
+                                    'https://us-central1-the-vibes-firebase.cloudfunctions.net/sendVerificationCode',
                                     {
                                         method: 'POST',
                                         headers: {
@@ -88,21 +88,21 @@ export function SignUp ()
                                             recipients: [ emailValue ],
                                         } ),
                                     }
-                                );
-                                const data = await response.json();
+                                )
+                                const data = await response.json()
                                 if ( response.ok )
                                 {
-                                    setMessage( 'Verification code sent successfully!' );
+                                    setMessage( 'Verification code sent successfully!' )
                                 } else
                                 {
-                                    setMessage( `Error: ${ data.error || 'Unknown error' }` );
+                                    setMessage( `Error: ${ data.error || 'Unknown error' }` )
                                 }
                             } catch ( error: any )
                             {
-                                console.error( 'Error sending verification code:', error );
-                                setMessage( `Error: ${ error.message || 'Unknown error' }` );
+                                console.error( 'Error sending verification code:', error )
+                                setMessage( `Error: ${ error.message || 'Unknown error' }` )
                             }
-                            setLoading( false );
+                            setLoading( false )
                         } }
                         modifier={ mod()
                             .background( loading() ? '#6c757d' : '#007BFF' )
@@ -132,5 +132,5 @@ export function SignUp ()
                 </Column>
             </Column>
         </Box>
-    );
+    )
 }
