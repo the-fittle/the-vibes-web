@@ -1,13 +1,13 @@
-export { v4 as createId } from 'uuid'
-export * from './components'
-export * from './views'
-export * from './util'
+export { v4 as createId } from 'uuid';
+export * from './components';
+export * from './views';
+export * from './util';
 
-import { render } from 'solid-js/web'
-import { App } from './views/app'
+import { render } from 'solid-js/web';
+import { App } from './views/app/index';
 
-import 'virtual:uno.css'
-import '@/../public/styles/index.css'
+import 'virtual:uno.css';
+import '@/../public/styles/index.css';
 
 render( () => <App />, document.body )
 

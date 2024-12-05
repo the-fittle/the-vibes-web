@@ -1,22 +1,24 @@
-import { ValidComponent, splitProps } from 'solid-js'
-import { BoxProps, Box } from '../box'
-import { Modifier } from '@/components/util/modifiers'
+import { ValidComponent, splitProps } from 'solid-js';
+import { BoxProps, Box } from '../box';
+import { Modifier } from '@/components/util/modifiers';
 
 export interface ButtonOptions
 {
-    onClick?: ( event: Event ) => void
-    disabled?: boolean
-    modifier?: Modifier
-    children?: any
+    onClick?: ( event: Event ) => void;
+    disabled?: boolean;
+    modifier?: Modifier;
+    children?: any;
 }
 
-export type ButtonProps<T extends ValidComponent = 'button'> = BoxProps<T> & ButtonOptions
+export type ButtonProps<T extends ValidComponent = 'button'> = BoxProps<T> & ButtonOptions;
 
 export function Button<T extends ValidComponent = 'button'> ( props: ButtonProps<T> )
 {
-    const [ local, others ] = splitProps( props, [ 'modifier', 'onClick', 'disabled', 'children' ] )
+    const [ local, others ] = splitProps( props, [ 'modifier', 'onClick', 'disabled', 'children' ] );
 
-    const modifier = new Modifier().then( local.modifier )
+    const modifier = new Modifier()
+        .then( local.modifier )
+        .css( 'white-space', 'nowrap' );
 
     return (
         <Box
@@ -28,5 +30,5 @@ export function Button<T extends ValidComponent = 'button'> ( props: ButtonProps
         >
             { local.children }
         </Box>
-    )
+    );
 }

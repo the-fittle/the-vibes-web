@@ -1,43 +1,51 @@
-import { Modifier, colors, mod } from '@/components/util'
-import { type JSX, type ValidComponent, type ComponentProps, splitProps, createSignal, createEffect, createMemo } from 'solid-js'
-import { type DynamicProps } from 'solid-js/web'
+import { createSignal, ValidComponent, ComponentProps, splitProps, createMemo } from 'solid-js';
+import { Modifier, ModifierMediaManager } from '@/components';
+import { JSX } from 'solid-js/jsx-runtime';
+import { Dynamic } from 'solid-js/web';
 
-import { Dynamic } from 'solid-js/web'
 
-
-// Box
+// Options
 // -----------------------------------------------------------------------------------------------------------
 export interface BoxOptions<T extends ValidComponent>
 {
-	modifier?: Modifier
+	modifier?: Modifier;
 }
 
-export type BoxProps<T extends ValidComponent> =
-	{ component?: ( T | undefined ) }
-	& ComponentProps<T>
-	& BoxOptions<T>
+export type BoxProps<T extends ValidComponent> = {
+	component?: T | undefined;
+} & ComponentProps<T> &
+	BoxOptions<T>;
 
 export function Box<T extends ValidComponent = 'div'> ( props: BoxProps<T> )
 {
-	const [ local, others ] = splitProps( props, [ 'component', 'modifier' ] )
+	const [ local, others ] = splitProps( props, [ 'component', 'modifier' ] );
 
-	const [ modifier, setModifier ] = createSignal(
-		mod().then( local[ 'modifier' ] )
-	)
+	const mediaManager = ModifierMediaManager.getInstance();
 
-	if ( local[ 'component' ] !== undefined )
+	const computedStyles = createMemo<JSX.CSSProperties>( () =>
 	{
-		console.log( 'Component:', local[ 'component' ] )
+		let combinedStyles: JSX.CSSProperties = { ...local.modifier?.style() };
 
-	}
+		if ( local.modifier )
+		{
+			local.modifier.conditionalModifiers().forEach( ( condModifier, query ) =>
+			{
+				const isActive = mediaManager.isActive( query )();
+				if ( isActive )
+				{
+					combinedStyles = { ...combinedStyles, ...condModifier.style() };
+				}
+			} );
+		}
 
-	createMemo( () => setModifier( mod().then( local[ 'modifier' ] ) ) )
+		return combinedStyles;
+	} );
 
 	return (
 		<Dynamic
-			component={ local[ 'component' ] || 'div' }
-			style={ modifier().styles() } // Reactive modifier styles
+			component={ local.component || 'div' }
+			style={ computedStyles() }
 			{ ...others }
 		/>
-	)
+	);
 }

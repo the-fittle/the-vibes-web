@@ -1,18 +1,18 @@
-import { ValidComponent, splitProps, mergeProps } from 'solid-js'
-import { Show } from 'solid-js/web'
-import { BoxProps, Box, Text } from '@/components'
-import { Modifier, Alignment, Arrangement, mod } from '@/components/util/modifiers'
+import { ValidComponent, splitProps, mergeProps } from 'solid-js';
+import { Show } from 'solid-js/web';
+import { BoxProps, Box, Text } from '@/components';
+import { Modifier, Alignment, Arrangement, mod } from '@/components/util/modifiers';
 
 // Fontawesome
 // -----------------------------------------------------------------------------------------------------------
 export interface FontawesomeOptions
 {
-    icon: FontawesomeIcon
-    size?: string
-    weight?: string
-    family?: FontawesomeFamily
-    color?: string
-    colorDuotone?: string
+    icon: FontawesomeIcon;
+    size?: string;
+    weight?: string;
+    family?: FontawesomeFamily;
+    color?: string;
+    colorDuotone?: string;
 }
 
 export enum FontawesomeFamily
@@ -24,27 +24,27 @@ export enum FontawesomeFamily
     Brands = "Fontawesome Brands",
 }
 
-export type FontawesomeProps<T extends ValidComponent> = BoxProps<T> & FontawesomeOptions
+export type FontawesomeProps<T extends ValidComponent> = BoxProps<T> & FontawesomeOptions;
 
 export function Fontawesome<T extends ValidComponent = 'div'> ( props: FontawesomeProps<T> )
 {
     let [ properties, options, others ] = splitProps( props,
         [ "modifier", "children" ],
         [ "icon", "size", "family", "weight", "color", "colorDuotone" ]
-    )
+    );
 
     options = mergeProps( {
         icon: FontawesomeIcon.Circle,
         family: FontawesomeFamily.Solid,
-    }, options )
+    }, options );
 
     const modifier = mod()
         .then( properties[ 'modifier' ] )
-        .thenIf( options[ 'size' ], mod().fontSize( options[ 'size' ] ) )
-        .thenIf( options[ 'weight' ], mod().fontWeight( options[ 'weight' ] ) )
-        .thenIf( options[ 'family' ], mod().fontFamily( options[ 'family' ] ) )
-        .thenIf( options[ 'color' ], mod().color( options[ 'color' ] ) )
-        .select( 'none' )
+        // .thenIf( options[ 'size' ], mod().fontSize( options[ 'size' ] ) )
+        // .thenIf( options[ 'weight' ], mod().fontWeight( options[ 'weight' ] ) )
+        // .thenIf( options[ 'family' ], mod().fontFamily( options[ 'family' ] ) )
+        // .thenIf( options[ 'color' ], mod().color( options[ 'color' ] ) )
+        .select( 'none' );
 
 
     return (
@@ -58,7 +58,7 @@ export function Fontawesome<T extends ValidComponent = 'div'> ( props: Fontaweso
                 <Text modifier={ modifier } text={ options[ 'icon' ] } size={ options[ 'size' ] } family={ options[ 'family' ] } weight={ options[ 'weight' ] } color={ options[ 'colorDuotone' ] } />
             </Box>
         </Show>
-    )
+    );
 }
 
 export enum FontawesomeIcon

@@ -1,140 +1,156 @@
-import axios from 'axios'
-import { getSecret } from './secrets'
+import axios from 'axios';
+import { getSecret } from './secrets';
 
-interface MailgunBaseOptions
-{
-    recipients: string[]
-    from?: string
-    replyTo?: string
+export interface MailgunBaseOptions {
+	from?: string;
+	subject?: string;
+	variables?: Record<string, any>;
+	recipients: string[];
+	recipientsVariables?: Record<string, any>;
 }
 
-interface CustomEmailOptions extends MailgunBaseOptions
-{
-    subject: string
-    html?: string
-    text?: string
+export interface CustomEmailOptions extends MailgunBaseOptions {
+	html?: string;
+	text?: string;
 }
 
-interface TemplateEmailOptions extends MailgunBaseOptions
-{
-    templateName: string
-    subject?: string
-    variables?: Record<string, any>
-    recipientVariables?: Record<string, any>
+export interface TemplateEmailOptions extends MailgunBaseOptions {
+	template: string;
 }
 
-export async function sendCustomEmail ( options: CustomEmailOptions ): Promise<void>
-{
-    const { recipients, subject, from, replyTo, html, text } = options
+export async function sendCustomEmail(
+	options: CustomEmailOptions
+): Promise<void> {
+	const {
+		from,
+		subject,
+		variables = {},
+		recipients,
+		recipientsVariables = {},
+		html,
+		text,
+	} = options;
 
-    const MAILGUN_API_KEY = await getSecret( 'MAILGUN_API_KEY' )
-    const MAILGUN_DOMAIN = await getSecret( 'MAILGUN_DOMAIN' )
-    const sender = from || ( await getSecret( 'MAILGUN_SENDER' ) )
+	if (from === undefined) {
+		throw new Error(
+			'Failed to send custom email via Mailgun. Missing (property) `from`.'
+		);
+	}
 
-    const data = new URLSearchParams()
-    data.append( 'from', sender )
-    data.append( 'to', recipients.join( ',' ) )
-    data.append( 'subject', subject )
+	if (subject === undefined) {
+		throw new Error(
+			'Failed to send custom email via Mailgun. Missing (property) `subject`.'
+		);
+	}
 
-    if ( replyTo )
-    {
-        data.append( 'h:Reply-To', replyTo )
-    }
+	const MAILGUN_API_KEY = await getSecret('MAILGUN_API_KEY');
+	const MAILGUN_DOMAIN = await getSecret('MAILGUN_DOMAIN');
 
-    if ( html )
-    {
-        data.append( 'html', html )
-    }
-    if ( text )
-    {
-        data.append( 'text', text )
-    }
+	const data = new URLSearchParams();
 
-    const auth = {
-        username: 'api',
-        password: MAILGUN_API_KEY,
-    }
+	data.append('from', from);
+	data.append('to', recipients.join(','));
+	data.append('subject', subject);
 
-    try
-    {
-        await axios.post( `https://api.mailgun.net/v3/${ MAILGUN_DOMAIN }/messages`, data, { auth } )
-    } catch ( error )
-    {
-        if ( axios.isAxiosError( error ) )
-        {
-            console.error( 'Error sending custom email via Mailgun:', error.response?.data || error.message )
-        } else if ( error instanceof Error )
-        {
-            console.error( 'Error sending custom email via Mailgun:', error.message )
-        } else
-        {
-            console.error( 'Error sending custom email via Mailgun:', error )
-        }
-        throw new Error( 'Failed to send custom email via Mailgun.' )
-    }
+	if (html) {
+		data.append('html', html);
+	}
+	if (text) {
+		data.append('text', text);
+	}
+
+	if (Object.keys(variables).length > 0) {
+		data.append('t:variables', JSON.stringify(variables));
+	}
+
+	if (Object.keys(recipientsVariables).length > 0) {
+		data.append('recipient-variables', JSON.stringify(recipientsVariables));
+	}
+
+	const auth = {
+		username: 'api',
+		password: MAILGUN_API_KEY,
+	};
+
+	try {
+		await axios.post(
+			`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
+			data,
+			{ auth }
+		);
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			console.error(
+				'Error sending custom email via Mailgun:',
+				error.response?.data || error.message
+			);
+		} else if (error instanceof Error) {
+			console.error(
+				'Error sending custom email via Mailgun:',
+				error.message
+			);
+		} else {
+			console.error('Error sending custom email via Mailgun:', error);
+		}
+		throw new Error('Failed to send custom email via Mailgun.');
+	}
 }
 
-export async function sendTemplateEmail ( options: TemplateEmailOptions ): Promise<void>
-{
-    const {
-        recipients,
-        from,
-        replyTo,
-        templateName,
-        subject,
-        variables = {},
-        recipientVariables = {},
-    } = options
+export async function sendTemplateEmail(
+	options: TemplateEmailOptions
+): Promise<void> {
+	const {
+		from,
+		template,
+		variables = {},
+		recipients,
+		recipientsVariables = {},
+	} = options;
 
-    const MAILGUN_API_KEY = await getSecret( 'MAILGUN_API_KEY' )
-    const MAILGUN_DOMAIN = await getSecret( 'MAILGUN_DOMAIN' )
-    const sender = from || ( await getSecret( 'MAILGUN_SENDER' ) )
+	const MAILGUN_API_KEY = await getSecret('MAILGUN_API_KEY');
+	const MAILGUN_DOMAIN = await getSecret('MAILGUN_DOMAIN');
 
-    const data = new URLSearchParams()
-    data.append( 'from', sender )
-    data.append( 'to', recipients.join( ',' ) )
-    data.append( 'template', templateName )
+	const data = new URLSearchParams();
+	data.append('to', recipients.join(','));
+	data.append('template', template);
 
-    if ( replyTo )
-    {
-        data.append( 'h:Reply-To', replyTo )
-    }
+	if (from) {
+		data.append('from', from);
+	}
 
-    if ( subject )
-    {
-        data.append( 'subject', subject )
-    }
+	if (Object.keys(variables).length > 0) {
+		data.append('t:variables', JSON.stringify(variables));
+	}
 
-    if ( Object.keys( variables ).length > 0 )
-    {
-        data.append( 'h:X-Mailgun-Variables', JSON.stringify( variables ) )
-    }
+	if (Object.keys(recipientsVariables).length > 0) {
+		data.append('recipient-variables', JSON.stringify(recipientsVariables));
+	}
 
-    if ( Object.keys( recipientVariables ).length > 0 )
-    {
-        data.append( 'recipient-variables', JSON.stringify( recipientVariables ) )
-    }
+	const auth = {
+		username: 'api',
+		password: MAILGUN_API_KEY,
+	};
 
-    const auth = {
-        username: 'api',
-        password: MAILGUN_API_KEY,
-    }
-
-    try
-    {
-        await axios.post( `https://api.mailgun.net/v3/${ MAILGUN_DOMAIN }/messages`, data, { auth } )
-    } catch ( error )
-    {
-        if ( axios.isAxiosError( error ) )
-        {
-            console.error( 'Error sending template email via Mailgun:', error.response?.data || error.message )
-        } else if ( error instanceof Error )
-        {
-            console.error( 'Error sending template email via Mailgun:', error.message )
-        } else
-        {
-            console.error( 'Error sending template email via Mailgun:', error )
-        }
-        throw new Error( 'Failed to send template email via Mailgun.' )
-    }
+	try {
+		await axios.post(
+			`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
+			data,
+			{ auth }
+		);
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			console.error(
+				'Error sending template email via Mailgun:',
+				error.response?.data || error.message
+			);
+		} else if (error instanceof Error) {
+			console.error(
+				'Error sending template email via Mailgun:',
+				error.message
+			);
+		} else {
+			console.error('Error sending template email via Mailgun:', error);
+		}
+		throw new Error('Failed to send template email via Mailgun.');
+	}
 }

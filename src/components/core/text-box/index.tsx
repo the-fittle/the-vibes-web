@@ -1,18 +1,18 @@
-import { ValidComponent, splitProps } from 'solid-js'
-import { BoxProps, Box } from '../box'
-import { Modifier } from '@/components/util/modifiers'
+import { ValidComponent, splitProps } from 'solid-js';
+import { BoxProps, Box } from '../box';
+import { Modifier } from '@/components/util/modifiers';
 
 export interface TextBoxOptions
 {
-    type?: string
-    value?: string
-    onInput?: ( event: Event ) => void
-    placeholder?: string
-    disabled?: boolean
-    modifier?: Modifier
+    type?: string;
+    value?: string;
+    onInput?: ( event: Event ) => void;
+    placeholder?: string;
+    disabled?: boolean;
+    modifier?: Modifier;
 }
 
-export type TextBoxProps<T extends ValidComponent = 'input'> = BoxProps<T> & TextBoxOptions
+export type TextBoxProps<T extends ValidComponent = 'input'> = BoxProps<T> & TextBoxOptions;
 
 export function TextBox<T extends ValidComponent = 'input'> ( props: TextBoxProps<T> )
 {
@@ -23,9 +23,9 @@ export function TextBox<T extends ValidComponent = 'input'> ( props: TextBoxProp
         'onInput',
         'placeholder',
         'disabled',
-    ] )
+    ] );
 
-    const modifier = new Modifier().then( local.modifier )
+    const modifier = new Modifier().then( local.modifier );
 
     return (
         <Box
@@ -38,5 +38,5 @@ export function TextBox<T extends ValidComponent = 'input'> ( props: TextBoxProp
             modifier={ modifier }
             { ...others }
         />
-    )
+    );
 }

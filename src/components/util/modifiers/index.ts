@@ -1,1 +1,1 @@
-export * from './modifier'
+export * from './modifier';

@@ -1,46 +1,9 @@
-import { Box, ColorShades, ColorPalette, colors, mod, ModifierMedia, Alignment, Arrangement, Column, createShadowBlur, fp, Row, sp } from '@/components';
-import { Button } from '@/components/core/button';
-import { Fontawesome, FontawesomeIcon } from '@/components/core/fontawesome';
-import { Spacer, Text, TextBox } from '@/components';
-import { createContext, useContext, createSignal, Accessor, Setter } from 'solid-js';
+import { Box, Row, Column, Text, Spacer, TextBox, Button } from '@/components';
+import { Alignment, Arrangement, ModifierMedia, mod, colors, fp, sp } from '@/components/util';
+import { useAppContext } from '@/views/app';
+import { createSignal } from 'solid-js';
 
-// Context
-// -----------------------------------------------------------------------------------------------------------
-const AppContext = createContext<AppContext>();
-
-export interface AppContext
-{
-    colors: [ Accessor<ColorShades>, Setter<ColorShades> ],
-}
-
-export function useAppContext ()
-{
-    const context = useContext( AppContext );
-
-    if ( !context )
-    {
-        throw new Error( 'useAppContext must be used within an AppContext.Provider' );
-    }
-
-    return context;
-}
-
-// Root
-// -----------------------------------------------------------------------------------------------------------
-export function AppRoot ()
-{
-    return (
-        <AppContext.Provider value={ {
-            colors: createSignal<ColorShades>( colors.slate )
-        } }>
-            <AppContent />
-        </AppContext.Provider>
-    );
-}
-
-// Content
-// -----------------------------------------------------------------------------------------------------------
-export function AppContent ()
+export function SignUp ()
 {
     const context = useAppContext();
 
@@ -74,7 +37,7 @@ export function AppContent ()
                     alignment={ Alignment.Start() }
                     arrangement={ Arrangement.SpacedBy( fp( 16 ) ) }
                 >
-                    <Text text='Hello, Vibes!'
+                    <Text text='Sign Up'
                         modifier={
                             mod()
                                 .fontSize( sp( 24 ) )
@@ -171,7 +134,3 @@ export function AppContent ()
         </Box>
     );
 }
-
-// Component
-// -----------------------------------------------------------------------------------------------------------
-export const App = Object.assign( AppRoot, { Content: AppContent } );
