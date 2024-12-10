@@ -1,7 +1,7 @@
+import { JSX } from 'solid-js/jsx-runtime';
 import { ValidComponent, splitProps, mergeProps } from 'solid-js';
 import { Show } from 'solid-js/web';
 import { BoxProps, Box, Text } from '@/components';
-import { Modifier, Alignment, Arrangement, mod } from '@/components/util/modifiers';
 
 // Fontawesome
 // -----------------------------------------------------------------------------------------------------------
@@ -28,34 +28,35 @@ export type FontawesomeProps<T extends ValidComponent> = BoxProps<T> & Fontaweso
 
 export function Fontawesome<T extends ValidComponent = 'div'> ( props: FontawesomeProps<T> )
 {
-    let [ properties, options, others ] = splitProps( props,
-        [ "modifier", "children" ],
+    const [ properties, options, others ] = splitProps( props,
+        [ "style" ],
         [ "icon", "size", "family", "weight", "color", "colorDuotone" ]
     );
 
-    options = mergeProps( {
+    const mergedOptions = mergeProps( {
         icon: FontawesomeIcon.Circle,
         family: FontawesomeFamily.Solid,
     }, options );
 
-    const modifier = mod()
-        .then( properties[ 'modifier' ] )
-        // .thenIf( options[ 'size' ], mod().fontSize( options[ 'size' ] ) )
-        // .thenIf( options[ 'weight' ], mod().fontWeight( options[ 'weight' ] ) )
-        // .thenIf( options[ 'family' ], mod().fontFamily( options[ 'family' ] ) )
-        // .thenIf( options[ 'color' ], mod().color( options[ 'color' ] ) )
-        .select( 'none' );
+    const defaultStyles: JSX.CSSProperties = {
+
+    };
+
+    const combinedStyles = {
+        ...defaultStyles,
+        ...( properties[ 'style' ] || {} ),
+    };
 
 
     return (
-        <Show when={ options[ 'family' ] === FontawesomeFamily.Duotone } fallback={
+        <Show when={ mergedOptions[ 'family' ] === FontawesomeFamily.Duotone } fallback={
             <Box { ...others }>
-                <Text modifier={ modifier } text={ options[ 'icon' ] } size={ options[ 'size' ] } family={ options[ 'family' ] } weight={ options[ 'weight' ] } color={ options[ 'color' ] } />
+                <Text text={ mergedOptions[ 'icon' ] } size={ mergedOptions[ 'size' ] } family={ mergedOptions[ 'family' ] } weight={ mergedOptions[ 'weight' ] } color={ mergedOptions[ 'color' ] } />
             </Box>
         }>
             <Box { ...others }>
-                <Text modifier={ modifier } text={ options[ 'icon' ] } size={ options[ 'size' ] } family={ options[ 'family' ] } weight={ options[ 'weight' ] } color={ options[ 'color' ] } />
-                <Text modifier={ modifier } text={ options[ 'icon' ] } size={ options[ 'size' ] } family={ options[ 'family' ] } weight={ options[ 'weight' ] } color={ options[ 'colorDuotone' ] } />
+                <Text text={ mergedOptions[ 'icon' ] } size={ mergedOptions[ 'size' ] } family={ mergedOptions[ 'family' ] } weight={ mergedOptions[ 'weight' ] } color={ mergedOptions[ 'color' ] } />
+                <Text text={ mergedOptions[ 'icon' ] } size={ mergedOptions[ 'size' ] } family={ mergedOptions[ 'family' ] } weight={ mergedOptions[ 'weight' ] } color={ mergedOptions[ 'colorDuotone' ] } />
             </Box>
         </Show>
     );

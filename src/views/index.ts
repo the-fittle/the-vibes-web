@@ -1,1 +1,1 @@
-export * from './app/index-old';
+export * from './app';

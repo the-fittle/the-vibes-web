@@ -1,8 +1,11 @@
-import { Box, ColorShades, ColorPalette, colors, mod, ModifierMedia, Alignment, Arrangement, Column, createShadowBlur, fp, Row, sp } from '@/components';
+import { JSX } from 'solid-js/jsx-runtime';
+import { Box, Row, Column, Alignment, Arrangement, ColorShades, Color, mod } from '@/components';
 import { Button } from '@/components/core/button';
 import { Fontawesome, FontawesomeIcon } from '@/components/core/fontawesome';
 import { Spacer, Text, TextBox } from '@/components';
 import { createContext, useContext, createSignal, Accessor, Setter } from 'solid-js';
+import { DragDropProvider } from '@/components/core/box/box-dnd-context';
+
 
 // Context
 // -----------------------------------------------------------------------------------------------------------
@@ -10,18 +13,16 @@ const AppContext = createContext<AppContext>();
 
 export interface AppContext
 {
-    colors: [ Accessor<ColorShades>, Setter<ColorShades> ],
+    theme: [ Accessor<ColorShades>, Setter<ColorShades> ],
 }
 
 export function useAppContext ()
 {
     const context = useContext( AppContext );
-
     if ( !context )
     {
         throw new Error( 'useAppContext must be used within an AppContext.Provider' );
     }
-
     return context;
 }
 
@@ -31,9 +32,11 @@ export function AppRoot ()
 {
     return (
         <AppContext.Provider value={ {
-            colors: createSignal<ColorShades>( colors.slate )
+            theme: createSignal<ColorShades>( Color.Slate )
         } }>
-            <AppContent />
+            <DragDropProvider>
+                <AppContent />
+            </DragDropProvider>
         </AppContext.Provider>
     );
 }
@@ -42,133 +45,66 @@ export function AppRoot ()
 // -----------------------------------------------------------------------------------------------------------
 export function AppContent ()
 {
-    const context = useAppContext();
-
-    const [ email, setEmail ] = createSignal( '' );
-    const [ message, setMessage ] = createSignal( '' );
-    const [ loading, setLoading ] = createSignal( false );
-
     return (
-        <Box modifier={
-            mod()
-                .fillMaxSize()
-        }>
-            <Column
-                modifier={
-                    mod()
-                        .fillMaxSize()
-                        .padding( fp( 32 ) )
-                }
-                alignment={ Alignment.Center() }
-                arrangement={ Arrangement.Center() }
+        <Column
+            modifier={
+                mod()
+                    .background( Color.Slate[ 400 ] )
+                    .media( '(max-width: 768px)',
+                        mod()
+                            .background( Color.Red[ 500 ] )
+                    )
+            }
+            alignment={ Alignment.Center() }
+            arrangement={ Arrangement.Start() }>
+            <Spacer weight={ 1 } />
+            <Text text='Hello World' />
+            <Spacer weight={ 1 } />
+
+            {/* Example Draggable Box */ }
+            <Box
+                clickable={ { onClick: e => console.log( 'Box clicked!' ) } }
+                pressable={ {
+                    onPressStart: e => ( { border: '2px solid red' } ),
+                    onPressEnd: e => console.log( 'Press ended' )
+                } }
+                hoverable={ {
+                    onHoverStart: e => ( { background: 'lightblue' } ),
+                    onHoverEnd: e => console.log( 'Hover ended' )
+                } }
+                focusable={ {
+                    onFocus: e => ( { outline: '2px solid green' } ),
+                    onBlur: e => console.log( 'Focus lost' )
+                } }
+                selectable={ {
+                    onSelect: e => ( { color: 'purple' } ),
+                    onDeselect: e => console.log( 'Deselected' )
+                } }
+                draggable={ {
+                    data: 'my-draggable-item',
+                    onDragStart: ( data, ev ) => console.log( 'Drag start', data ),
+                    onDragEnd: ( data, ev ) => console.log( 'Drag end', data )
+                } }
+                x={ 10 }
+                y={ 10 }
+                style={ { width: '100px', height: '100px', background: 'gray', margin: '10px' } }
+                onClick={ e => console.log( 'User click handler' ) }
             >
-                <Column modifier={
-                    mod()
-                        .centerFlex()
-                        .background( colors.white )
-                        .when( ModifierMedia.Mobile,
-                            mod()
-                                .fillMaxWidth()
-                        )
-                }
-                    alignment={ Alignment.Start() }
-                    arrangement={ Arrangement.SpacedBy( fp( 16 ) ) }
-                >
-                    <Text text='Hello, Vibes!'
-                        modifier={
-                            mod()
-                                .fontSize( sp( 24 ) )
-                                .fontFamily( 'montserrat' )
-                                .fontWeight( 800 )
-                        } />
+                Complex Box (Draggable)
+            </Box>
 
-                    <Spacer modifier={ mod().weight( 1 ) } />
+            {/* Example Droppable Box */ }
+            <Box
+                droppable={ {
+                    onDrop: ( data, ev ) => console.log( 'Dropped:', data ),
+                    onDragOver: ev => console.log( 'Dragging over droppable area' )
+                } }
+                style={ { width: '200px', height: '200px', background: 'lightyellow', margin: '10px' } }
+            >
+                Drop Here (Droppable)
+            </Box>
 
-                    <TextBox
-                        type="email"
-                        value={ email() }
-                        onInput={ ( e ) => setEmail( ( e.currentTarget as HTMLInputElement ).value ) }
-                        placeholder="Email address"
-                        modifier={ mod()
-                            .background( 'white' )
-                            .border( '1px solid #ccc' )
-                            .padding( fp( 8 ) )
-                            .fontSize( fp( 16 ) )
-                            .radius( fp( 4 ) )
-                            .height( fp( 40 ) )
-                            .fillMaxWidth()
-                        }
-                    />
-                    <Button
-                        disabled={ loading() }
-                        onClick={ async () =>
-                        {
-                            if ( loading() ) return;
-                            setLoading( true );
-                            const emailValue = email().trim();
-                            if ( !emailValue )
-                            {
-                                setMessage( 'Please enter a valid email address.' );
-                                setLoading( false );
-                                return;
-                            }
-                            try
-                            {
-                                const response = await fetch(
-                                    'https://us-central1-the-vibes-firebase.cloudfunctions.net/sendCode',
-                                    {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                        },
-                                        body: JSON.stringify( {
-                                            recipients: [ emailValue ],
-                                        } ),
-                                    }
-                                );
-                                const data = await response.json();
-                                if ( response.ok )
-                                {
-                                    setMessage( 'Verification code sent successfully!' );
-                                } else
-                                {
-                                    setMessage( `Error: ${ data.error || 'Unknown error' }` );
-                                }
-                            } catch ( error: any )
-                            {
-                                console.error( 'Error sending verification code:', error );
-                                setMessage( `Error: ${ error.message || 'Unknown error' }` );
-                            }
-                            setLoading( false );
-                        } }
-                        modifier={ mod()
-                            .background( loading() ? '#6c757d' : '#007BFF' )
-                            .color( 'white' )
-                            .padding( `${ fp( 10 ) } ${ fp( 20 ) }` )
-                            .fontSize( fp( 16 ) )
-                            .border( 'none' )
-                            .fillMaxWidth()
-                            .textAlign( 'center' )
-                            .radius( fp( 4 ) )
-                            .cursor( loading() ? 'not-allowed' : 'pointer' )
-                        }
-                    >
-                        { loading() ? 'Sending...' : 'Send Verification Code' }
-                    </Button>
-                    { message() && (
-                        <Text
-                            text={ message() }
-                            modifier={
-                                mod()
-                                    .fontSize( sp( 16 ) )
-                                    .fontFamily( 'montserrat' )
-                                    .fontWeight( 400 )
-                            }
-                        />
-                    ) }
-                </Column>
-            </Column>
-        </Box>
+        </Column>
     );
 }
 

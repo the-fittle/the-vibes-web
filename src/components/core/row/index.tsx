@@ -1,13 +1,15 @@
+import { JSX } from 'solid-js/jsx-runtime';
 import { ValidComponent, splitProps } from 'solid-js';
 import { BoxProps, Box } from '../box';
-import { Modifier, Alignment, Arrangement, mod } from '@/components/util/modifiers';
+import { Alignment, Arrangement } from '../util';
+
 
 // Row
 // -----------------------------------------------------------------------------------------------------------
 export interface RowOptions
 {
-    alignment?: Modifier;
-    arrangement?: Modifier;
+    alignment?: Alignment;
+    arrangement?: Arrangement;
 }
 
 export type RowProps<T extends ValidComponent> = BoxProps<T> & RowOptions;
@@ -15,14 +17,22 @@ export type RowProps<T extends ValidComponent> = BoxProps<T> & RowOptions;
 export function Row<T extends ValidComponent = 'div'> ( props: RowProps<T> )
 {
     const [ properties, options, others ] = splitProps( props,
-        [ "modifier" ],
-        [ "alignment", "arrangement", ]
-    );
+        [ 'style' ],
+        [ "alignment", "arrangement" ] );
 
-    const modifier = mod().display( "flex" ).flex( "row" )
-        .then( properties[ 'modifier' ] )
-        .then( options[ 'alignment' ] || Alignment.Center() )
-        .then( options[ 'arrangement' ] || Arrangement.Start() );
+    const defaultStyles: JSX.CSSProperties = {
+        'display': 'flex',
+        'flex-direction': 'row'
+    };
+    const alignmentStyles = options.alignment?.styles() || Alignment.Center().styles();
+    const arrangementStyles = options.arrangement?.styles() || Arrangement.Start().styles();
 
-    return <Box modifier={ modifier } { ...others } />;
+    const combinedStyles = {
+        ...defaultStyles,
+        ...alignmentStyles,
+        ...arrangementStyles,
+        ...( properties[ 'style' ] || {} ),
+    };
+
+    return <Box style={ combinedStyles } { ...others } />;
 }

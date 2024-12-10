@@ -1,34 +1,35 @@
+import { JSX } from 'solid-js/jsx-runtime';
 import { ValidComponent, splitProps } from 'solid-js';
 import { BoxProps, Box } from '../box';
-import { Modifier } from '@/components/util/modifiers';
 
 export interface ButtonOptions
 {
-    onClick?: ( event: Event ) => void;
     disabled?: boolean;
-    modifier?: Modifier;
-    children?: any;
+    onClick?: ( e: InputEvent ) => void;
 }
 
 export type ButtonProps<T extends ValidComponent = 'button'> = BoxProps<T> & ButtonOptions;
 
 export function Button<T extends ValidComponent = 'button'> ( props: ButtonProps<T> )
 {
-    const [ local, others ] = splitProps( props, [ 'modifier', 'onClick', 'disabled', 'children' ] );
+    const [ properties, options, others ] = splitProps( props,
+        [ 'style' ],
+        [ 'onClick', 'disabled' ],
+    );
 
-    const modifier = new Modifier()
-        .then( local.modifier )
-        .css( 'white-space', 'nowrap' );
+    const defaultStyles: JSX.CSSProperties = {};
+
+    const combinedStyles = {
+        ...defaultStyles,
+        ...( properties[ 'style' ] || {} )
+    };
 
     return (
         <Box
             as="button"
-            onClick={ local.onClick }
-            disabled={ local.disabled }
-            modifier={ modifier }
+            clickable={ options[ 'onClick' ] }
+            disabled={ options.disabled }
             { ...others }
-        >
-            { local.children }
-        </Box>
+        />
     );
 }

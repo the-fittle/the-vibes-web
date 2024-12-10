@@ -8,3 +8,5 @@ export * from './spacer';
 export * from './fontawesome';
 export * from './button';
 export * from './text-box';
+
+export * from './util';

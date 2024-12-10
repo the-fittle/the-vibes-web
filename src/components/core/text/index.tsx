@@ -1,6 +1,6 @@
+import { JSX } from 'solid-js/jsx-runtime';
 import { ValidComponent, splitProps } from 'solid-js';
 import { BoxProps, Box } from '../box';
-import { Modifier, Alignment, Arrangement, mod } from '@/components/util/modifiers';
 
 // Text
 // -----------------------------------------------------------------------------------------------------------
@@ -8,26 +8,33 @@ export interface TextOptions
 {
     text: string;
     size?: number;
-    weight?: number;
+    weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
     family?: string;
-    color?: string;
+    textAlign?: string;
+    textDecoration?: string;
 }
 
 export type TextProps<T extends ValidComponent> = BoxProps<T> & TextOptions;
 
 export function Text<T extends ValidComponent = 'div'> ( props: TextProps<T> )
 {
-    let [ properties, options, others ] = splitProps( props,
-        [ "modifier" ],
-        [ "text", "size", "family", "weight", "color", ]
+    const [ properties, options, others ] = splitProps( props,
+        [ 'style' ],
+        [ 'text', 'size', 'family', 'weight', 'textAlign', 'textDecoration' ],
     );
 
-    const modifier = mod()
-        .then( properties[ 'modifier' ] );
-    // .thenIf( options[ 'size' ], mod().fontSize( options[ 'size' ] ) )
-    // .thenIf( options[ 'weight' ], mod().fontWeight( options[ 'weight' ] ) )
-    // .thenIf( options[ 'family' ], mod().fontFamily( options[ 'family' ] ) )
-    // .thenIf( options[ 'color' ], mod().color( options[ 'color' ] ) )
+    const defaultStyles: JSX.CSSProperties = {
+        'font-size': options[ 'size' ],
+        'font-family': options[ 'family' ],
+        'font-weight': options[ 'weight' ],
+        'text-align': options[ 'textAlign' ],
+        'text-decoration': options[ 'textDecoration' ]
+    };
 
-    return <Box modifier={ modifier } children={ options[ 'text' ] } { ...others } />;
+    const combinedStyles = {
+        ...defaultStyles,
+        ...( properties[ 'style' ] || {} )
+    };
+
+    return <Box style={ combinedStyles } children={ options[ 'text' ] } { ...others } />;
 }

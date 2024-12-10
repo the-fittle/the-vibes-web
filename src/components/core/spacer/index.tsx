@@ -1,23 +1,29 @@
-
+import { JSX } from 'solid-js/jsx-runtime';
 import { ValidComponent, splitProps } from 'solid-js';
 import { BoxProps, Box } from '../box';
-import { mod } from '@/components/util/modifiers';
+import { Alignment, Arrangement } from '../util';
+
 
 // Spacer
 // -----------------------------------------------------------------------------------------------------------
 export interface SpacerOptions
-{ }
+{
+    weight?: number;
+}
 
-export type SpacerProps<T extends ValidComponent> = BoxProps<T> & SpacerOptions;
+export type SpacerProps<T extends ValidComponent> = BoxProps<T, SpacerOptions>;
 
 export function Spacer<T extends ValidComponent = 'div'> ( props: SpacerProps<T> )
 {
-    const [ properties, others ] = splitProps( props,
-        [ "modifier", "children" ],
+    const [ properties, options, others ] = splitProps( props,
+        [],
+        [ 'weight' ],
     );
 
-    const modifier = mod()
-        .then( properties[ 'modifier' ] );
+    const defaultStyles: JSX.CSSProperties = {
+        'flex': `${ options[ 'weight' ] } 1 100%`
+    };
+    const combinedStyles = { ...defaultStyles };
 
-    return <Box modifier={ modifier } { ...others } />;
+    return <Box style={ combinedStyles } { ...others } />;
 }
